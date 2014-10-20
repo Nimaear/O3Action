@@ -1,6 +1,6 @@
 local addon, ns = ...
 
-local extraBar = ns.ActionBar:instance({
+local extraBar = ns.ActionBar:extend({
 	buttonWidth = 48,
 	buttonHeight = 48,
 	actionOffset = 169,
@@ -8,45 +8,42 @@ local extraBar = ns.ActionBar:instance({
 	columns = 1,
 	name = 'Extra',
 	id = 'extra',
-	bindings = {
-		"ALT-Y",
-	},
+	stateVisibility = "[extrabar] show; hide",
 	config = {
-		visible = false,
-		XOffset = -100,
-		YOffset = 100,
-		anchor = 'BOTTOMRIGHT',
-		anchorTo = 'BOTTOMRIGHT',
-		anchorParent = UIParent,
+		visible = true,
+		xOffset = 0,
+		yOffset = 107,
+		anchor = 'BOTTOM',
+		anchorTo = 'TOP',
+		anchorParent = 'Main',
+		bindings = {
+			"ALT-Y",
+		},
 	},
-
+	events = {
+		ACTIONBAR_UPDATE_COOLDOWN = true,
+		ACTIONBAR_UPDATE_USABLE = true,
+		SPELL_UPDATE_USABLE = true,
+		ACTIONBAR_UPDATE_STATE = true,
+		SPELL_UPDATE_CHARGES = true,
+		SPELL_UPDATE_COOLDOWN = true,
+		ACTIONBAR_SLOT_CHANGED = true,
+		UPDATE_EXTRA_ACTION_BAR = true,
+		UNIT_TARGET = true,
+	},
 	createButton = function (self, action, index)
 		local buttonName = self.name.."Button"..index
 		local button = ns.Button:instance({
 			width = self.buttonWidth,
+			parentFrame = self.frame,
 			name = buttonName,
-			binding = self.bindings[index] or nil,
+			index = index,			
+			binding = self.settings.bindings[index] or nil,
 			action = action,
 			height = self.buttonHeight,
 		}, self.frame)
 		self.frame:SetFrameRef(buttonName, button.frame)
 		return button
-	end,
-	place = function (self, handler)
-		if (rawget(handler.settings,self.name..'anchorParent')) then
-			self.frame:SetPoint(handler.settings[self.name..'anchor'], handler.anchorLookup[handler.settings[self.name..'anchorParent']], handler.settings[self.name..'anchorTo'], handler.settings[self.name..'XOffset'], handler.settings[self.name..'YOffset'])
-		else		
-			if (handler.barDict.pet) then
-				self.frame:SetPoint('BOTTOM', handler.barDict.pet.frame, 'TOP', 0, 60)
-			elseif (handler.barDict.main) then
-				self.frame:SetPoint('BOTTOM', handler.barDict.pet.main, 'TOP', 0, 60)
-			else
-				self.frame:SetPoint('CENTER', UIParent, 'CENTER', -100, 0)	
-			end
-		end
-	end,
-	registerStateDriver = function (self)
-		RegisterStateDriver(self.frame, "visibility", "[extrabar] show; hide")
 	end,
 })
 

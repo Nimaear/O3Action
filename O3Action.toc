@@ -12,4 +12,4 @@ Handler.lua
 
 Bars\Main.lua
 Bars\Pet.lua
-## Bars\Extra.lua
+Bars\Extra.lua

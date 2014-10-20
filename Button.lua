@@ -159,9 +159,12 @@ ns.Button = O3.UI.IconButton:extend({
 	getSlot = function (self)
 		return self.action
 	end,
-	setBinding = function (self)
-		if self.binding then
-			SetBinding(self.binding, "CLICK "..self.name..":Leftself")
+	setBinding = function (self, clear)
+		if (clear) then
+			self.binding = nil
+			self.text:SetText('')
+		elseif self.binding then
+			SetBinding(self.binding, "CLICK "..self.name..":Left")
 			local bindingText = stringGsub(self.binding, "ALT--CTRL", "ac")
 			bindingText = stringGsub(bindingText,"ALT--SHIFT","as")
 			bindingText = stringGsub(bindingText,"SHIFT","s")
@@ -252,18 +255,5 @@ ns.PetButton = ns.Button:extend({
 			GameTooltip:Hide()
 		end
 
-	end,
-	setBinding = function (self, button)
-		if self.binding then
-			SetBinding(self.binding, "CLICK "..self.name..":LeftButton")
-			local bindingText = stringGsub(self.binding, "ALT--CTRL", "ac")
-			bindingText = stringGsub(bindingText,"ALT--SHIFT","as")
-			bindingText = stringGsub(bindingText,"SHIFT","s")
-			bindingText = stringGsub(bindingText,"ALT","a")
-			bindingText = stringGsub(bindingText,"CTRL","c")
-			bindingText = stringGsub(bindingText,"MOUSEWHEELUP","▲")
-			bindingText = stringGsub(bindingText,"MOUSEWHEELDOWN","▼")
-			self.text:SetText(bindingText)
-		end
 	end,
 })

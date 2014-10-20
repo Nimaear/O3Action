@@ -15,28 +15,7 @@ local handler = O3:module({
 	bars = {},
 	barDict = {},
 	events = {
-		ACTIONBAR_UPDATE_COOLDOWN = true,
-		ACTIONBAR_UPDATE_USABLE = true,
-		SPELL_UPDATE_USABLE = true,
-		ACTIONBAR_UPDATE_STATE = true,
-		SPELL_UPDATE_CHARGES = true,
-		SPELL_UPDATE_COOLDOWN = true,
-		UPDATE_VEHICLE_ACTIONBAR = true,
-		ACTIONBAR_SLOT_CHANGED = true,
-		UPDATE_BONUS_ACTIONBAR = true,
-		UPDATE_SHAPESHIFT_FORM = true,
-		UPDATE_SHAPESHIFT_FORMS = true,
-		UPDATE_SHAPESHIFT_USABLE = true,
-		ACTIONBAR_PAGE_CHANGED = true,
 		PLAYER_ENTERING_WORLD = true,
-		UPDATE_EXTRA_ACTION_BAR = true,
-		UNIT_TARGET = true,
-		ACTIONBAR_SHOWGRID = true,
-		ACTIONBAR_HIDEGRID = true,
-		PET_BAR_UPDATE_COOLDOWN = true,
-		PET_BAR_UPDATE = true,
-		PET_BAR_UPDATE_USABLE = true,
-		UNIT_PET = true,
 	},
 	barDropdown = {
 		{ label = 'Screen', value = 'Screen'},
@@ -50,10 +29,27 @@ local handler = O3:module({
 	settings = {
 
 	},
+	configMode = false,
 	addOptions = function (self)
 		self:addOption('_1', {
 			type = 'Title',
 			label = 'General',
+		})
+		self:addOption('bind', {
+			type = 'Button',
+			label = 'Keybind mode',
+			onClick = function (option)
+				self:toggleBindingMode()
+			end,
+		})
+		self:addOption('config', {
+			type = 'Button',
+			label = 'Toggle config mode',
+			onClick = function (option)
+				O3:safe(function () 
+					self:toggleConfigMode()
+				end)
+			end,
 		})
 	end,
 	anchorSet = function (self, token, value, option)
@@ -70,264 +66,142 @@ local handler = O3:module({
 			end
 		end)
 	end,
-	addBar = function (self, bar)
-		tableInsert(self.bars, bar)
-		self.anchorLookup[bar.name] = bar.frame
-		table.insert(self.barDropdown, { label = bar.name, value = bar.name})
-		if (bar.id) then
-			self.barDict[bar.id] = bar
-		end
-	end,
-	ACTIONBAR_UPDATE_COOLDOWN = function (self)
+	saveBinding = function (self, name, index, binding)
+		local found = false
 		for i = 1, #self.bars do
 			local bar = self.bars[i]
-			if not bar.frame:IsVisible() then
-				return
-			end
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:updateCooldown()
+			for j = 1, #bar.buttons do
+				local button = bar.buttons[j]
+				if button.binding == binding then
+					found = true
+					button:setBinding(true)
+					bar.settings.bindings[j] = nil
+				end
 			end
 		end
-	end,
-	UNIT_TARGET = function (self)
+		if (found) then
+			SetBinding(binding, nil)
+		end
 		for i = 1, #self.bars do
 			local bar = self.bars[i]
-			if not bar.frame:IsVisible() then
-				return
-			end
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:update()
-			end
-		end
-	end,
-	ACTIONBAR_SHOWGRID = function (self)
-		for i = 1, #self.bars do
-			local bar = self.bars[i]
-			if not bar.frame:IsVisible() then
-				return
-			end
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:update()
-			end
-		end
-	end,	
-	ACTIONBAR_HIDEGRID = function (self)
-		for i = 1, #self.bars do
-			local bar = self.bars[i]
-			if not bar.frame:IsVisible() then
-				return
-			end
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:update()
-			end
-		end
-	end,
-	ACTIONBAR_UPDATE_USABLE = function (self)
-		for i = 1, #self.bars do
-			local bar = self.bars[i]
-			if not bar.frame:IsVisible() then
-				return
-			end
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:updateUsable()
-			end
-		end
-	end,
-	PET_BAR_UPDATE_COOLDOWN = function (self)
-		if (self.barDict.pet) then
-			local bar = self.barDict.pet
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:updateCooldown()
-			end
-		end
-	end,
-	PET_BAR_UPDATE = function (self)
-		if (self.barDict.pet) then
-			local bar = self.barDict.pet
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:update()
-			end
-		end
-	end,
-	PET_BAR_UPDATE_USABLE = function (self)
-		if (self.barDict.pet) then
-			local bar = self.barDict.pet
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:updateUsable()
-			end
-		end
-	end,
-	UNIT_PET = function (self)
-		if (self.barDict.pet) then
-			local bar = self.barDict.pet
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:update()
-			end
-		end
-	end,
-
-	UPDATE_EXTRA_ACTION_BAR = function (self)
-		if self.barDict.extra then
-			local bar = self.barDict.extra
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:update()
-			end
-		end
-	end,
-	SPELL_UPDATE_USABLE = function (self)
-		for i = 1, #self.bars do
-			local bar = self.bars[i]
-			if not bar.frame:IsVisible() then
-				return
-			end
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:updateUsable()
-			end
-		end
-	end,
-	ACTIONBAR_UPDATE_STATE = function (self)
-		for i = 1, #self.bars do
-			local bar = self.bars[i]
-			if not bar.frame:IsVisible() then
-				return
-			end
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:updateState()
-			end
-		end
-	end,
-	SPELL_UPDATE_CHARGES = function (self)
-		for i = 1, #self.bars do
-			local bar = self.bars[i]
-			if not bar.frame:IsVisible() then
-				return
-			end
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:update()
-			end
-		end
-	end,
-	SPELL_UPDATE_COOLDOWN = function (self)
-		for i = 1, #self.bars do
-			local bar = self.bars[i]
-			if not bar.frame:IsVisible() then
-				return
-			end
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:updateCooldown()
-			end
-		end
-	end,
-	UPDATE_VEHICLE_ACTIONBAR = function (self)
-		-- TODO : detect mainbar
-		for i = 1, #self.bars do
-			local bar = self.bars[i]
-			if not bar.frame:IsVisible() then
-				return
-			end
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:update()
-			end
-		end
-	end,
-	ACTIONBAR_SLOT_CHANGED = function (self, slot)
-		for i = 1, #self.bars do
-			local bar = self.bars[i]
-			if not bar.frame:IsVisible() then
-				return
-			end
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				local modifiedSlot = button:getSlot()
-				if (modifiedSlot == slot) then
-					button:update()
+			local button = bar.buttons[index]
+			if (button) then
+				if button.index == index and button.frame:GetName() == name then
+					bar.settings.bindings[index] = binding
+					button.binding = binding
+					button:setBinding()					
 				end
 			end
 		end
 	end,
-	UPDATE_BONUS_ACTIONBAR = function (self)
+	toggleBindingMode = function (self)
+		self.bindingMode = not self.bindingMode
+		if (self.bindingMode) then
+			O3.UI.IconButton.bindMode = true
+			O3.Alert('Keybinds mode is enabled. Press exit to leave keybind mode', function ()
+				self.frame:SetScript('OnKeyUp', nil)
+				self.frame:SetScript('OnKeyDown', nil)
+				self.bindingMode = false
+			end, 'Exit')
+			self.frame:SetScript('OnKeyDown', function (frame)
+				local buttonFrame = GetMouseFocus()
+				local button = buttonFrame.panel
+				local buttonName = buttonFrame.name
+				local index = button and button.index or nil
+				local binding = nil
+
+				if not buttonFrame or not button then
+					frame:SetPropagateKeyboardInput(true)
+				else
+					frame:SetPropagateKeyboardInput(false)
+				end
+			end)
+			self.frame:SetScript('OnKeyUp', function (frame, key)
+				local buttonFrame = GetMouseFocus()
+				local button = buttonFrame.panel
+				local buttonName = buttonFrame:GetName()
+				local index = button and button.index or nil
+				local binding = nil
+
+				if key == "ESCAPE" then
+					binding = nil
+				else
+					if key == "LSHIFT" or key == "RSHIFT" or key == "LCTRL" or key == "RCTRL" or key == "LALT" or key == "RALT" or key == "UNKNOWN" or key == "LeftButton" or key == "MiddleButton" then 
+						return 
+					end
+					
+					if key == "Button4" then 
+						key = "BUTTON4" 
+					end
+					if key == "Button5" then 
+						key = "BUTTON5" 
+					end
+					
+					local alt = IsAltKeyDown() and "ALT-" or ""
+					local ctrl = IsControlKeyDown() and "CTRL-" or ""
+					local shift = IsShiftKeyDown() and "SHIFT-" or ""
+
+					binding = alt..ctrl..shift..key
+				end
+				if (index and button and button.setBinding) then
+					self:saveBinding(buttonName, index, binding)
+				end
+
+			end)
+		end
+	end,	
+	toggleConfigMode = function (self)
+		self.configMode = not self.configMode
 		for i = 1, #self.bars do
 			local bar = self.bars[i]
-			if not bar.frame:IsVisible() then
-				return
-			end
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:update()
+			if (self.configMode) then
+				bar:unregisterStateDriver()
+				bar.frame:Show()
+			else
+				if (bar.settings.visible) then
+					bar:show()
+				else
+					bar:hide()
+				end
+				bar:registerStateDriver()
 			end
 		end
 	end,
-	UPDATE_SHAPESHIFT_FORM = function (self)
-		for i = 1, #self.bars do
-			local bar = self.bars[i]
-			if not bar.frame:IsVisible() then
-				return
-			end
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:update()
-			end
-		end
-	end,
-	UPDATE_SHAPESHIFT_FORMS = function (self)
-		for i = 1, #self.bars do
-			local bar = self.bars[i]
-			if not bar.frame:IsVisible() then
-				return
-			end
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:update()
-			end
-		end
-	end,
-	UPDATE_SHAPESHIFT_USABLE = function (self)
-		for i = 1, #self.bars do
-			local bar = self.bars[i]
-			if not bar.frame:IsVisible() then
-				return
-			end
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:update()
-			end
-		end
-	end,
-	ACTIONBAR_PAGE_CHANGED = function (self)
-		for i = 1, #self.bars do
-			local bar = self.bars[i]
-			if not bar.frame:IsVisible() then
-				return
-			end
-			for i = 1, #bar.buttons do
-				local button = bar.buttons[i]
-				button:update()
-			end
-		end
+	addBar = function (self, bar)
+		tableInsert(self.bars, bar)
 	end,
 	PLAYER_ENTERING_WORLD = function (self)
 		self:hideBlizzardCrap()
 		self:unregisterEvent('PLAYER_ENTERING_WORLD')
 		for i = 1, #self.bars do
-			local bar = self.bars[i]
-			bar:load(self)
+			local constructor = self.bars[i]
+			
+			if (not self.settings[constructor.name]) then
+				self.settings[constructor.name] = {
+					bindings = {},
+				}
+				for i = 1,#constructor.config.bindings do
+					self.settings[constructor.name].bindings[i] = constructor.config.bindings[i]
+				end
+			end
+			constructor.settings = self.settings[constructor.name]
+			setmetatable(constructor.settings, {__index = constructor.config})
+			local bar = constructor:instance({
+				handler = self,
+			})
+			self.anchorLookup[bar.name] = bar.frame
+			table.insert(self.barDropdown, { label = bar.name, value = bar.name})
+			if (bar.id) then
+				self.barDict[bar.id] = bar
+			end
+			self.bars[i] = bar
+
 		end
-		self:ACTIONBAR_PAGE_CHANGED()
+
+		for i = 1, #self.bars do
+			local bar = self.bars[i]
+			bar:load()
+		end
 	end,	
 	hideBlizzardCrap = function (self)
 		-- MainMenuBar:UnregisterAllEvents()
