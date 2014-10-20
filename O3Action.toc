@@ -1,0 +1,15 @@
+## Interface: 60000
+## DefaultState: Enabled
+## Title: |cFF007FFFO3|r Action
+## Author: Oz
+## Version: 0.1
+## Notes: O3 Action bars
+## RequiredDeps: O3
+
+Button.lua
+ActionBar.lua
+Handler.lua
+
+Bars\Main.lua
+Bars\Pet.lua
+## Bars\Extra.lua
