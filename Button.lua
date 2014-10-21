@@ -164,7 +164,7 @@ ns.Button = O3.UI.IconButton:extend({
 			self.binding = nil
 			self.text:SetText('')
 		elseif self.binding then
-			SetBinding(self.binding, "CLICK "..self.name..":Left")
+			SetBinding(self.binding, "CLICK "..self.name..":LeftButton")
 			local bindingText = stringGsub(self.binding, "ALT--CTRL", "ac")
 			bindingText = stringGsub(bindingText,"ALT--SHIFT","as")
 			bindingText = stringGsub(bindingText,"SHIFT","s")
