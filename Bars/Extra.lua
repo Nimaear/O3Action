@@ -17,7 +17,7 @@ local extraBar = ns.ActionBar:extend({
 		anchorTo = 'TOP',
 		anchorParent = 'Main',
 		bindings = {
-			"ALT-Y",
+			--"ALT-Y",
 		},
 	},
 	events = {
