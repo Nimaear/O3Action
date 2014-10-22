@@ -85,7 +85,7 @@ ns.Button = O3.UI.IconButton:extend({
 
 		self:setAttributes()
 
-		self.frame:RegisterForDrag("Leftself")
+		self.frame:RegisterForDrag("LeftButton")
 		self.frame:RegisterForClicks("ANYDOWN")
 
 		SecureHandlerWrapScript(self.frame, "OnEnter", self.frame, [[
@@ -110,10 +110,13 @@ ns.Button = O3.UI.IconButton:extend({
 		self.frame:SetAttribute("actionpage",1)
 		self.frame:SetAttribute("useparent-actionpage", true)
 
+
 		self.frame:SetAttribute("_ondragstart", [[
+			print("HI")
 			local modifiedSlot = (self:GetAttribute("actionpage")-1)*12+self:GetID()
 			return "clear", "action", modifiedSlot
 		]])
+
 
 		SecureHandlerWrapScript(self.frame, "OnAttributeChanged", self.frame, [[
 			if name == "actionpage" then
