@@ -112,7 +112,6 @@ ns.Button = O3.UI.IconButton:extend({
 
 
 		self.frame:SetAttribute("_ondragstart", [[
-			print("HI")
 			local modifiedSlot = (self:GetAttribute("actionpage")-1)*12+self:GetID()
 			return "clear", "action", modifiedSlot
 		]])
