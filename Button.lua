@@ -45,7 +45,7 @@ ns.Button = O3.UI.IconButton:extend({
 			self.count:SetText(count)
 		else
 			local actionCount, actionMax = GetActionCharges(modifiedSlot)
-			if actionMax > 0 then 
+			if actionMax > 1 then 
 				self.count:SetText(actionCount)
 			else
 				self.count:SetText("")
