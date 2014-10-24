@@ -18,6 +18,7 @@ local mainBar = ns.ActionBar:extend({
 		SHAMAN = "[vehicleui:12] 12; [possessbar] 12; [overridebar] 14; [bar:2] 2; [bonusbar:1] 7;1", -- No different bar for other stances
 		WARRIOR = "[vehicleui:12] 12; [possessbar] 12; [overridebar] 14; [bar:2] 2; [bonusbar:1] 7;1",
 		PRIEST = "[vehicleui:12] 12; [possessbar] 12; [overridebar] 14; [bar:2] 2; [bonusbar:1] 7; 1",
+		DEATHKNIGHT = "[vehicleui:12] 12; [possessbar] 12; [overridebar] 14; [bar:2] 2; [bonusbar:1] 7; 1",
 	},
 	config = {
 		visible = true,
