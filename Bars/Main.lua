@@ -35,7 +35,6 @@ local mainBar = ns.ActionBar:extend({
 		return (self.frame:GetAttribute("actionpage")-1)*12+self.action
 	end,	
 })
-
 ns.Handler:addBar(mainBar)
 
 local secondBar = ns.ActionBar:extend({
@@ -60,7 +59,6 @@ local secondBar = ns.ActionBar:extend({
 	registerStateDriver = function (self)
 	end,
 })
-
 ns.Handler:addBar(secondBar)
 
 
@@ -86,9 +84,7 @@ local thirdBar = ns.ActionBar:extend({
 	registerStateDriver = function (self)
 	end,
 })
-
 ns.Handler:addBar(thirdBar)
-
 
 local fourthBar = ns.ActionBar:extend({
 	vertical = true,
@@ -112,9 +108,7 @@ local fourthBar = ns.ActionBar:extend({
 	registerStateDriver = function (self)
 	end,
 })
-
 ns.Handler:addBar(fourthBar)
-
 
 local fifthBar = ns.ActionBar:extend({
 	vertical = true,
@@ -138,5 +132,4 @@ local fifthBar = ns.ActionBar:extend({
 	registerStateDriver = function (self)
 	end,
 })
-
 ns.Handler:addBar(fifthBar)
