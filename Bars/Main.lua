@@ -28,7 +28,7 @@ local mainBar = ns.ActionBar:extend({
 		anchorTo = 'BOTTOM',
 		anchorParent = 'Screen',
 		bindings = {
-			--"1", "2", "3", "4", "5", "`", "Q", "E", "F", "V", "C", "Z",
+			"1", "2", "3", "4", "5", "`", "Q", "E", "F", "V", "C", "Z",
 		},		
 	},	
 	getSlot = function (self)
@@ -54,10 +54,7 @@ local secondBar = ns.ActionBar:extend({
 		anchorTo = 'RIGHT',
 		anchorParent = 'Screen',
 		bindings = {
-			--"ALT-1", "ALT-2", "ALT-3", "ALT-4", "ALT-5", "ALT-`", "ALT-Q", "ALT-E", "ALT-F", "ALT-V", "ALT-C", "ALT-Z",
-			--"R","SHIFT-R","ALT-R","G","SHIFT-G","ALT-G","T","SHIFT-T","ALT-T","X","SHIFT-X","ALT-X",
-			--"ALT-W","ALT-A","ALT-S","ALT-D","SHIFT-W","SHIFT-A","SHIFT-S","SHIFT-D","CTRL-W","CTRL-A","CTRL-S","CTRL-D",
-			--"CTRL-1","CTRL-2","CTRL-3","B","Y","ALT-B","SHIFT-Q","SHIFT-E","SHIFT-F","SHIFT-V","SHIFT-C","SHIFT-Z",
+			"ALT-1", "ALT-2", "ALT-3", "ALT-4", "ALT-5", "ALT-`", "ALT-Q", "ALT-E", "ALT-F", "ALT-V", "ALT-C", "ALT-Z",
 		},
 	},
 	registerStateDriver = function (self)
@@ -67,58 +64,79 @@ local secondBar = ns.ActionBar:extend({
 ns.Handler:addBar(secondBar)
 
 
--- local rightBar = ns.ActionBar:instance({
--- 	vertical = true,
--- 	buttonWidth = 32,
--- 	buttonHeight = 32,
--- 	actionOffset = 25,
--- 	rows = 12,
--- 	columns = 3,
--- 	name = 'Third',
--- 	config = {
--- 		visible = false,
--- 	},	
--- 	bindings = {
--- 		"ALT-1", "ALT-2", "ALT-3", "ALT-4", "ALT-5", "ALT-`", "ALT-Q", "ALT-E", "ALT-F", "ALT-V", "ALT-C", "ALT-Z",
--- 		"R","SHIFT-R","ALT-R","G","SHIFT-G","ALT-G","T","SHIFT-T","ALT-T","X","SHIFT-X","ALT-X",
--- 		"ALT-W","ALT-A","ALT-S","ALT-D","SHIFT-W","SHIFT-A","SHIFT-S","SHIFT-D","CTRL-W","CTRL-A","CTRL-S","CTRL-D",
+local thirdBar = ns.ActionBar:extend({
+	vertical = true,
+	buttonWidth = 32,
+	buttonHeight = 32,
+	actionOffset = 25,
+	rows = 12,
+	columns = 4,
+	name = 'Third',
+	config = {
+		visible = false,
+		xOffset = 0,
+		yOffset = 0,
+		anchor = 'RIGHT',
+		anchorTo = 'RIGHT',
+		anchorParent = 'Second',
+		bindings = {
+			"R","SHIFT-R","ALT-R","G","SHIFT-G","ALT-G","T","SHIFT-T","ALT-T","X","SHIFT-X","ALT-X",
+		},
+	},
+	registerStateDriver = function (self)
+	end,
+})
 
--- 	},
--- 	place = function (self, handler)
--- 		self.frame:SetPoint('RIGHT', secondBar.frame, 'LEFT', 0, 0)	
--- 	end,
--- 	registerStateDriver = function (self)
--- 	end,
--- })
-
--- ns.Handler:addBar(rightBar)
-
-
--- local testBar = ns.ActionBar:instance({
--- 	vertical = true,
--- 	buttonWidth = 32,
--- 	buttonHeight = 32,
--- 	actionOffset = 1,
--- 	rows = 12,
--- 	columns = 10,
--- 	name = 'TestBar',
--- 	config = {
--- 		visible = false,
--- 	},	
--- 	bindings = {
--- 	},
--- 	place = function (self, handler)
--- 		self.frame:SetPoint('RIGHT', secondBar.frame, 'LEFT', 0, 0)	
--- 	end,
--- 	registerStateDriver = function (self)
--- 	end,
--- })
-
--- ns.Handler:addBar(testBar)
+ns.Handler:addBar(thirdBar)
 
 
+local fourthBar = ns.ActionBar:extend({
+	vertical = true,
+	buttonWidth = 32,
+	buttonHeight = 32,
+	actionOffset = 25,
+	rows = 12,
+	columns = 4,
+	name = 'Fourth',
+	config = {
+		visible = false,
+		xOffset = 0,
+		yOffset = 0,
+		anchor = 'RIGHT',
+		anchorTo = 'RIGHT',
+		anchorParent = 'Third',
+		bindings = {
+			"ALT-W","ALT-A","ALT-S","ALT-D","SHIFT-W","SHIFT-A","SHIFT-S","SHIFT-D","CTRL-W","CTRL-A","CTRL-S","CTRL-D",
+		},
+	},
+	registerStateDriver = function (self)
+	end,
+})
+
+ns.Handler:addBar(fourthBar)
 
 
+local fifthBar = ns.ActionBar:extend({
+	vertical = true,
+	buttonWidth = 32,
+	buttonHeight = 32,
+	actionOffset = 25,
+	rows = 12,
+	columns = 1,
+	name = 'Fifth',
+	config = {
+		visible = false,
+		xOffset = 0,
+		yOffset = 0,
+		anchor = 'RIGHT',
+		anchorTo = 'RIGHT',
+		anchorParent = 'Fourth',
+		bindings = {
+			"CTRL-1","CTRL-2","CTRL-3","B","Y","ALT-B","SHIFT-Q","SHIFT-E","SHIFT-F","SHIFT-V","SHIFT-C","SHIFT-Z",
+		},
+	},
+	registerStateDriver = function (self)
+	end,
+})
 
-
-
+ns.Handler:addBar(fifthBar)
