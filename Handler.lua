@@ -124,7 +124,7 @@ local handler = O3:module({
 					local bar = self.bars[i]
 					if (presetSettings[bar.name]) then
 						for setting, value in pairs(presetSettings[bar.name]) do
-							bar.settings[setting] = value
+							self.settings[bar.name][setting] = value
 						end
 						self:reloadSettings(bar)
 					end
