@@ -24,7 +24,7 @@ local petBar = ns.ActionBar:extend({
 		anchorTo = 'TOP',
 		anchorParent = 'Main',
 		bindings = {
-			--"ALT-CTRL-1", "ALT-CTRL-2", "ALT-CTRL-3", "CTRL-4", "CTRL-5", "CTRL-`", "CTRL-Q", "CTRL-E", "CTRL-C", "CTRL-X",
+			"ALT-CTRL-1", "ALT-CTRL-2", "ALT-CTRL-3", "CTRL-4", "CTRL-5", "CTRL-`", "CTRL-Q", "CTRL-E", "CTRL-C", "CTRL-X",
 		},
 	},
 	bindEventHandlers = function (self)

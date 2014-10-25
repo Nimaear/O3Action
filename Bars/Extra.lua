@@ -8,6 +8,7 @@ local extraBar = ns.ActionBar:extend({
 	config = {
 		visible = true,
 		buttonSize = 48,
+		maxButtons = 1,
 		rows = 1,
 		columns = 1,
 		spacing = 0,

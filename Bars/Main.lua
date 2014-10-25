@@ -30,7 +30,7 @@ local mainBar = ns.ActionBar:extend({
 		anchorTo = 'BOTTOM',
 		anchorParent = 'Screen',
 		bindings = {
-			--"1", "2", "3", "4", "5", "`", "Q", "E", "F", "V", "C", "Z",
+			"1", "2", "3", "4", "5", "`", "Q", "E", "F", "V", "C", "Z",
 		},		
 	},	
 	getSlot = function (self)
@@ -54,7 +54,7 @@ local secondBar = ns.ActionBar:extend({
 		anchorTo = 'RIGHT',
 		anchorParent = 'Screen',
 		bindings = {
-			--"ALT-1", "ALT-2", "ALT-3", "ALT-4", "ALT-5", "ALT-`", "ALT-Q", "ALT-E", "ALT-F", "ALT-V", "ALT-C", "ALT-Z",
+			"ALT-1", "ALT-2", "ALT-3", "ALT-4", "ALT-5", "ALT-`", "ALT-Q", "ALT-E", "ALT-F", "ALT-V", "ALT-C", "ALT-Z",
 		},
 	},
 	registerStateDriver = function (self)
@@ -78,7 +78,7 @@ local thirdBar = ns.ActionBar:extend({
 		anchorTo = 'LEFT',
 		anchorParent = 'Second',
 		bindings = {
-			--"R","SHIFT-R","ALT-R","G","SHIFT-G","ALT-G","T","SHIFT-T","ALT-T","X","SHIFT-X","ALT-X",
+			"R","SHIFT-R","ALT-R","G","SHIFT-G","ALT-G","T","SHIFT-T","ALT-T","X","SHIFT-X","ALT-X",
 		},
 	},
 	registerStateDriver = function (self)
@@ -101,7 +101,7 @@ local fourthBar = ns.ActionBar:extend({
 		anchorTo = 'LEFT',
 		anchorParent = 'Third',
 		bindings = {
-			--"ALT-W","ALT-A","ALT-S","ALT-D","SHIFT-W","SHIFT-A","SHIFT-S","SHIFT-D","CTRL-W","CTRL-A","CTRL-S","CTRL-D",
+			"ALT-W","ALT-A","ALT-S","ALT-D","SHIFT-W","SHIFT-A","SHIFT-S","SHIFT-D","CTRL-W","CTRL-A","CTRL-S","CTRL-D",
 		},
 	},
 	registerStateDriver = function (self)
@@ -124,7 +124,7 @@ local fifthBar = ns.ActionBar:extend({
 		anchorTo = 'LEFT',
 		anchorParent = 'Fourth',
 		bindings = {
-			--"CTRL-1","CTRL-2","CTRL-3","B","Y","ALT-B","SHIFT-Q","SHIFT-E","SHIFT-F","SHIFT-V","SHIFT-C","SHIFT-Z",
+			"CTRL-1","CTRL-2","CTRL-3","B","Y","ALT-B","SHIFT-Q","SHIFT-E","SHIFT-F","SHIFT-V","SHIFT-C","SHIFT-Z",
 		},
 	},
 	registerStateDriver = function (self)
