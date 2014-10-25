@@ -3,10 +3,6 @@ local addon, ns = ...
 local O3 = O3
 local tableInsert = table.insert
 local stringGsub = string.gsub
-local GetTime = GetTime
-
-
-
 
 local handler = O3:module({
 	name = 'Action',
@@ -27,14 +23,24 @@ local handler = O3:module({
 		enabled = true,
 	},
 	settings = {
-
+		preset = nil,
 	},
 	configMode = false,
 	addOptions = function (self)
+		local presets = {}
+		for name, preset in pairs(ns.presets) do
+			table.insert(presets, {value = name, label = name})
+		end
 		self:addOption('_1', {
 			type = 'Title',
 			label = 'General',
 		})
+        self:addOption('preset', {
+            type = 'DropDown',
+            label = 'Load preset',
+            setter = 'loadPreset',
+            _values = presets,
+        })		
 		self:addOption('bind', {
 			type = 'Button',
 			label = 'Keybind mode',
@@ -54,7 +60,7 @@ local handler = O3:module({
 	end,
 	anchorSet = function (self, token, value, option)
 		O3:safe(function ()
-			option.bar:place(self)
+			option.bar:place()
 		end)
 	end,
 	setVisible = function (self, token, value, option)
@@ -64,6 +70,82 @@ local handler = O3:module({
 			else
 				option.bar:hide()
 			end
+		end)
+	end,
+	setRows = function (self, token, value, option)
+		O3:safe(function ()
+			local bar = option.bar
+			self.settings[option.subModule].columns = math.ceil(bar.maxButtons/self.settings[option.subModule].rows)
+			self.settings[option.subModule].rows = math.ceil(bar.maxButtons/self.settings[option.subModule].columns)
+			for i = 1, #self.options do
+				local option = self.options[i]
+				if (option.token == 'rows' or option.token == 'columns') and option.bar == bar then
+					option:reset()
+				end
+			end
+			option.bar:anchorButtons()
+		end)
+	end,
+	setButtonSize = function (self, token, value, option)
+		O3:safe(function ()
+			local bar = option.bar
+			for i = 1, #bar.buttons do
+				bar.buttons[i].frame:SetSize(value, value)
+			end
+			option.bar:sizeFrame()
+		end)
+	end,
+	setSpacing = function (self, token, value, option)
+		option.bar:anchorButtons()
+	end,
+	setCols = function (self, token, value, option)
+		O3:safe(function ()
+			local bar = option.bar
+			self.settings[option.subModule].rows = math.ceil(12/self.settings[option.subModule].columns)
+			self.settings[option.subModule].columns = math.ceil(12/self.settings[option.subModule].rows)
+			for i = 1, #self.options do
+				local option = self.options[i]
+				if (option.token == 'rows' or option.token == 'columns') and option.bar == bar then
+					option:reset()
+				end
+			end
+			option.bar:anchorButtons()
+		end)
+	end,
+	setPreset = function (self, token, value, option)
+		self:loadPreset(value)
+	end,
+	loadPreset = function (self)
+		local preset = preset or self.settings.preset
+		if (preset) then
+			local presetSettings = ns.presets[preset]
+			if (presetSettings) then
+				for i = 1, #self.bars do
+					local bar = self.bars[i]
+					if (presetSettings[bar.name]) then
+						for setting, value in pairs(presetSettings[bar.name]) do
+							bar.settings[setting] = value
+						end
+						self:reloadSettings(bar)
+					end
+				end
+			end
+		end
+	end,
+	reloadSettings = function (self, bar)
+		O3:safe(function ()
+			for i = 1, #bar.buttons do
+				bar.buttons[i].frame:SetSize(bar.settings.buttonSize, bar.settings.buttonSize)
+			end
+			bar:sizeFrame()
+			bar:anchorButtons()
+			bar:place(self)
+			if (bar.settings.visible) then
+				bar:show()
+			else
+				bar:hide()
+			end
+
 		end)
 	end,
 	saveBinding = function (self, name, index, binding)

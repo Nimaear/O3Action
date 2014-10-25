@@ -2,26 +2,23 @@ local addon, ns = ...
 local O3 = O3
 local GetTime = GetTime
 
-
 local tableInsert = table.insert
 local stringGsub = string.gsub
 
-
 ns.ActionBar = O3.Class:extend({
-	rows = 1,
-	columns = 12,
 	actionOffset = 1,
-	buttonWidth = 32,
-	buttonHeight = 32,
-	vertical = false,
 	id = nil,
-	spacing = 1,
 	timeSinceLastUpdate = 0,
 	name = 'Default',
 	statePage = false,
 	stateVisibility = nil,
+	maxButtons = 12,
 	config = {
 		visible = true,
+		rows = 1,
+		columns = 12,
+		buttonSize = 32,
+		spacing = 1,
 		yOffset = -100,
 		xOffset = 100,
 		anchor = 'BOTTOMRIGHT',
@@ -78,11 +75,11 @@ ns.ActionBar = O3.Class:extend({
 				self.timeSinceLastUpdate = 0
 			end			
 		end)
+
 		self.buttons = {}
 		self:bindEventHandlers()
 		self.frame = frame
 		self:createButtons()
-		self:sizeFrame()
 		self:anchorButtons()
 		self:register()
 	end,
@@ -107,36 +104,82 @@ ns.ActionBar = O3.Class:extend({
 		handler:addOption('_1', {
 			type = 'Title',
 			label = self.name,
-		}, self.name)
+			subModule = self.name,
+		})
 		if (not self.stateVisibility) then
 			handler:addOption('visible', {
 				type = 'Toggle',
 				label = 'Visible',
 				bar = self,
 				setter = 'setVisible',
-			}, self.name)
+				subModule = self.name,
+			})
 		end
+		local cols, rows
+		handler:addOption('rows', {
+			type = 'Range',
+			label = 'Rows',
+			setter = 'setRows',
+			bar = self,
+			min = 1,
+			max = 12,
+			step = 1,
+			subModule = self.name,
+		})
+		handler:addOption('columns', {
+			type = 'Range',
+			label = 'Columns',
+			setter = 'setCols',
+			bar = self,
+			min = 1,
+			max = 12,
+			step = 1,
+			subModule = self.name,
+		})
+		handler:addOption('buttonSize', {
+			type = 'Range',
+			label = 'Button Size',
+			setter = 'setButtonSize',
+			bar = self,
+			min = 10,
+			max = 48,
+			step = 1,
+			subModule = self.name,
+		})
+		handler:addOption('spacing', {
+			type = 'Range',
+			label = 'Spacing',
+			setter = 'setSpacing',
+			bar = self,
+			min = 0,
+			max = 10,
+			step = 1,
+			subModule = self.name,
+		})
         handler:addOption('anchor', {
             type = 'DropDown',
             label = 'Point',
             bar = self,
             setter = 'anchorSet',
-            _values = O3.UI.anchorPoints
-        }, self.name)
+            _values = O3.UI.anchorPoints,
+            subModule = self.name,
+        })
         handler:addOption('anchorParent', {
             type = 'DropDown',
             label = 'Anchor To',
             bar = self,
             setter = 'anchorSet',
-            _values = handler.barDropdown
-        }, self.name)         
+            _values = handler.barDropdown,
+            subModule = self.name,
+        })         
         handler:addOption('anchorTo', {
             type = 'DropDown',
             label = 'To Point',
             bar = self,
             setter = 'anchorSet',
-            _values = O3.UI.anchorPoints
-        }, self.name)        
+            _values = O3.UI.anchorPoints,
+            subModule = self.name,
+        })        
 		handler:addOption('xOffset', {
 			type = 'Range',
 			label = 'Horizontal',
@@ -145,7 +188,8 @@ ns.ActionBar = O3.Class:extend({
 			min = -500,
 			max = 500,
 			step = 5,
-		}, self.name)
+			subModule = self.name,
+		})
 		handler:addOption('yOffset', {
 			type = 'Range',
 			label = 'Vertical',
@@ -154,7 +198,8 @@ ns.ActionBar = O3.Class:extend({
 			min = -500,
 			max = 500,
 			step = 5,
-		}, self.name)
+			subModule = self.name,
+		})
 		for k, v in pairs(self.config) do
 			handler.config[self.name..k] = v
 		end
@@ -184,18 +229,18 @@ ns.ActionBar = O3.Class:extend({
 		local button = ns.Button:instance({
 			index = index,
 			parentFrame = self.frame,
-			width = self.buttonWidth,
+			width = self.settings.buttonSize,
 			name = buttonName,
 			binding = self.settings.bindings[index] or nil,
 			action = action,
-			height = self.buttonHeight,
+			height = self.settings.buttonSize,
 		}, self.frame)
 		self.frame:SetFrameRef(buttonName, button.frame)
 		return button
 	end,
 	createButtons = function (self)
 		local buttonIndex = 0
-		local maxButtons = self.rows*self.columns
+		local maxButtons = self.maxButtons
 		for i = 1, maxButtons do
 			tableInsert(self.buttons, self:createButton(buttonIndex+self.actionOffset, i))
 			buttonIndex = buttonIndex+1
@@ -208,38 +253,19 @@ ns.ActionBar = O3.Class:extend({
 		]]):format(maxButtons, self.name.."Button"))
 	end,
 	sizeFrame = function (self)
-		local width = self.columns*(self.buttonWidth+self.spacing)+self.spacing
-		local height = self.rows*(self.buttonHeight+self.spacing)+self.spacing
+		local settings = self.settings
+		local width = settings.columns*(settings.buttonSize+settings.spacing)+settings.spacing
+		local height = settings.rows*(settings.buttonSize+settings.spacing)+settings.spacing
 		self.frame:SetSize(width, height)
 	end,
 	anchorButtons = function (self)
-		if (self.vertical) then
-			self:anchorButtonsVertical()
-		else
-			self:anchorButtonsHorizontal()
-		end
-	end,
-	anchorButtonsVertical = function (self)
-		local spacing, rows, lastButton = self.spacing, self.rows, self.buttons[1]
+		local spacing, columns, lastButton = self.settings.spacing, self.settings.columns, self.buttons[1]
+		lastButton:clearAllPoints()
 		lastButton.frame:SetPoint("TOPLEFT", self.frame, "TOPLEFT", spacing, -spacing)
 		for i = 2, #self.buttons do
 			local button = self.buttons[i]
-			if (i % rows == 1) then
-				button.frame:SetPoint("TOPLEFT", self.buttons[i-rows].frame, "TOPRIGHT", spacing, 0)
-			--elseif (i  == 7) then
-			--	button:SetPoint("TOPLEFT", lastButton, "TOPRIGHT", spacing * 20, 0)
-			else
-				button.frame:SetPoint("TOPLEFT", lastButton.frame, "BOTTOMLEFT", 0, -spacing)
-			end
-			lastButton = button
-		end
-	end,	
-	anchorButtonsHorizontal = function (self)
-		local spacing, columns, lastButton = self.spacing, self.columns, self.buttons[1]
-		lastButton.frame:SetPoint("TOPLEFT", self.frame, "TOPLEFT", spacing, -spacing)
-		for i = 2, #self.buttons do
-			local button = self.buttons[i]
-			if (i % columns == 1) then
+			button:clearAllPoints()
+			if (i % columns == 1 or columns == 1) then
 				button.frame:SetPoint("TOPLEFT", self.buttons[i-columns].frame, "BOTTOMLEFT", 0, -spacing)
 			--elseif (i  == 7) then
 			--	button:SetPoint("TOPLEFT", lastButton, "TOPRIGHT", spacing * 20, 0)
@@ -248,6 +274,7 @@ ns.ActionBar = O3.Class:extend({
 			end
 			lastButton = button
 		end
+		self:sizeFrame()
 	end,
 	registerStateDriver = function (self)
 		--RegisterStateDriver(self.frame, "page", "[vehicleui:12] 12; [possessbar] 12; [overridebar] 14; [bar:2] 2; [bonusbar:1] 7; 1")		

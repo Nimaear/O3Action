@@ -6,6 +6,7 @@
 ## Notes: O3 Action bars
 ## RequiredDeps: O3
 
+Presets.lua
 Button.lua
 ActionBar.lua
 Handler.lua

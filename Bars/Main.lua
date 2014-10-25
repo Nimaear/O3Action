@@ -1,8 +1,6 @@
 local addon, ns = ...
 
 local mainBar = ns.ActionBar:extend({
-	buttonWidth = 36,
-	buttonHeight = 36,
 	id = 'main',
 	name = 'Main',
 	statePage = true,
@@ -21,6 +19,10 @@ local mainBar = ns.ActionBar:extend({
 		DEATHKNIGHT = "[vehicleui:12] 12; [possessbar] 12; [overridebar] 14; [bar:2] 2; [bonusbar:1] 7; 1",
 	},
 	config = {
+		rows = 1,
+		columns = 12,
+		spacing = 1,
+		buttonSize = 36,
 		visible = true,
 		xOffset = 0,
 		yOffset = 4,
@@ -28,7 +30,7 @@ local mainBar = ns.ActionBar:extend({
 		anchorTo = 'BOTTOM',
 		anchorParent = 'Screen',
 		bindings = {
-			"1", "2", "3", "4", "5", "`", "Q", "E", "F", "V", "C", "Z",
+			--"1", "2", "3", "4", "5", "`", "Q", "E", "F", "V", "C", "Z",
 		},		
 	},	
 	getSlot = function (self)
@@ -38,14 +40,13 @@ local mainBar = ns.ActionBar:extend({
 ns.Handler:addBar(mainBar)
 
 local secondBar = ns.ActionBar:extend({
-	vertical = true,
-	buttonWidth = 32,
-	buttonHeight = 32,
 	actionOffset = 25,
-	rows = 12,
-	columns = 4,
 	name = 'Second',
 	config = {
+		rows = 12,
+		columns = 1,
+		spacing = 1,
+		buttonSize = 32,
 		visible = false,
 		xOffset = 0,
 		yOffset = 0,
@@ -53,7 +54,7 @@ local secondBar = ns.ActionBar:extend({
 		anchorTo = 'RIGHT',
 		anchorParent = 'Screen',
 		bindings = {
-			"ALT-1", "ALT-2", "ALT-3", "ALT-4", "ALT-5", "ALT-`", "ALT-Q", "ALT-E", "ALT-F", "ALT-V", "ALT-C", "ALT-Z",
+			--"ALT-1", "ALT-2", "ALT-3", "ALT-4", "ALT-5", "ALT-`", "ALT-Q", "ALT-E", "ALT-F", "ALT-V", "ALT-C", "ALT-Z",
 		},
 	},
 	registerStateDriver = function (self)
@@ -63,22 +64,21 @@ ns.Handler:addBar(secondBar)
 
 
 local thirdBar = ns.ActionBar:extend({
-	vertical = true,
-	buttonWidth = 32,
-	buttonHeight = 32,
-	actionOffset = 25,
-	rows = 12,
-	columns = 4,
+	actionOffset = 37,
 	name = 'Third',
 	config = {
 		visible = false,
+		buttonSize = 32,
+		spacing = 1,
+		rows = 12,
+		columns = 1,
 		xOffset = 0,
 		yOffset = 0,
 		anchor = 'RIGHT',
-		anchorTo = 'RIGHT',
+		anchorTo = 'LEFT',
 		anchorParent = 'Second',
 		bindings = {
-			"R","SHIFT-R","ALT-R","G","SHIFT-G","ALT-G","T","SHIFT-T","ALT-T","X","SHIFT-X","ALT-X",
+			--"R","SHIFT-R","ALT-R","G","SHIFT-G","ALT-G","T","SHIFT-T","ALT-T","X","SHIFT-X","ALT-X",
 		},
 	},
 	registerStateDriver = function (self)
@@ -87,22 +87,21 @@ local thirdBar = ns.ActionBar:extend({
 ns.Handler:addBar(thirdBar)
 
 local fourthBar = ns.ActionBar:extend({
-	vertical = true,
-	buttonWidth = 32,
-	buttonHeight = 32,
-	actionOffset = 25,
-	rows = 12,
-	columns = 4,
+	actionOffset = 49,
 	name = 'Fourth',
 	config = {
 		visible = false,
+		buttonSize = 32,
+		spacing = 1,
+		rows = 12,
+		columns = 1,
 		xOffset = 0,
 		yOffset = 0,
 		anchor = 'RIGHT',
-		anchorTo = 'RIGHT',
+		anchorTo = 'LEFT',
 		anchorParent = 'Third',
 		bindings = {
-			"ALT-W","ALT-A","ALT-S","ALT-D","SHIFT-W","SHIFT-A","SHIFT-S","SHIFT-D","CTRL-W","CTRL-A","CTRL-S","CTRL-D",
+			--"ALT-W","ALT-A","ALT-S","ALT-D","SHIFT-W","SHIFT-A","SHIFT-S","SHIFT-D","CTRL-W","CTRL-A","CTRL-S","CTRL-D",
 		},
 	},
 	registerStateDriver = function (self)
@@ -111,22 +110,21 @@ local fourthBar = ns.ActionBar:extend({
 ns.Handler:addBar(fourthBar)
 
 local fifthBar = ns.ActionBar:extend({
-	vertical = true,
-	buttonWidth = 32,
-	buttonHeight = 32,
-	actionOffset = 25,
-	rows = 12,
-	columns = 1,
+	actionOffset = 61,
 	name = 'Fifth',
 	config = {
+		buttonSize = 32,
+		spacing = 1,
+		rows = 12,
+		columns = 1,
 		visible = false,
 		xOffset = 0,
 		yOffset = 0,
 		anchor = 'RIGHT',
-		anchorTo = 'RIGHT',
+		anchorTo = 'LEFT',
 		anchorParent = 'Fourth',
 		bindings = {
-			"CTRL-1","CTRL-2","CTRL-3","B","Y","ALT-B","SHIFT-Q","SHIFT-E","SHIFT-F","SHIFT-V","SHIFT-C","SHIFT-Z",
+			--"CTRL-1","CTRL-2","CTRL-3","B","Y","ALT-B","SHIFT-Q","SHIFT-E","SHIFT-F","SHIFT-V","SHIFT-C","SHIFT-Z",
 		},
 	},
 	registerStateDriver = function (self)

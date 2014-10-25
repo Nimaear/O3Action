@@ -1,12 +1,10 @@
 local addon, ns = ...
 
 local petBar = ns.ActionBar:extend({
-	buttonWidth = 32,
-	buttonHeight = 32,
-	columns = 10,
 	name = 'Pet',
 	id = 'pet',
 	stateVisibility = "[pet] show; hide",
+	maxButtons = 10,
 	events = {
 		PET_BAR_UPDATE_COOLDOWN = true,
 		PET_BAR_UPDATE = true,
@@ -15,6 +13,10 @@ local petBar = ns.ActionBar:extend({
 		UNIT_TARGET = true,
 	},
 	config = {
+		rows = 1,
+		buttonSize = 32,
+		columns = 10,
+		spacing = 1,
 		visible = true,
 		xOffset = 0,
 		yOffset = 74,

@@ -1,16 +1,16 @@
 local addon, ns = ...
 
 local extraBar = ns.ActionBar:extend({
-	buttonWidth = 48,
-	buttonHeight = 48,
 	actionOffset = 169,
-	rows = 1,
-	columns = 1,
 	name = 'Extra',
 	id = 'extra',
 	stateVisibility = "[extrabar] show; hide",
 	config = {
 		visible = true,
+		buttonSize = 48,
+		rows = 1,
+		columns = 1,
+		spacing = 0,
 		xOffset = 0,
 		yOffset = 107,
 		anchor = 'BOTTOM',
