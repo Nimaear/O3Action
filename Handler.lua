@@ -31,9 +31,9 @@ local handler = O3:module({
 		for name, preset in pairs(ns.presets) do
 			table.insert(presets, {value = name, label = name})
 		end
-		self:addOption('_1', {
+		self:addOption('_Presets', {
 			type = 'Title',
-			label = 'General',
+			label = 'Presets',
 		})
         self:addOption('preset', {
             type = 'DropDown',
@@ -41,6 +41,10 @@ local handler = O3:module({
             setter = 'loadPreset',
             _values = presets,
         })		
+		self:addOption('_Config', {
+			type = 'Title',
+			label = 'Configuration',
+		})
 		self:addOption('bind', {
 			type = 'Button',
 			label = 'Keybind mode',
@@ -176,61 +180,65 @@ local handler = O3:module({
 			end
 		end
 	end,
+	onKeyUp = function (self, key)
+		local buttonFrame = GetMouseFocus()
+		local button = buttonFrame.panel
+		local buttonName = buttonFrame:GetName()
+		local index = button and button.index or nil
+		local binding = nil
+
+		if key == "ESCAPE" then
+			binding = nil
+		else
+			if key == "LSHIFT" or key == "RSHIFT" or key == "LCTRL" or key == "RCTRL" or key == "LALT" or key == "RALT" or key == "UNKNOWN" or key == "LeftButton" then 
+				return 
+			end
+			if IsMouseButtonDown(3) then
+				key = 'BUTTON3'
+			end
+			if IsMouseButtonDown(4) then
+				key = 'BUTTON4'
+			end
+			if IsMouseButtonDown(5) then
+				key = 'BUTTON5'
+			end
+			if key == "MiddleButton" then 
+				key = "BUTTON3" 
+			end
+			if key == "Button4" then 
+				key = "BUTTON4" 
+			end
+			if key == "Button5" then 
+				key = "BUTTON5" 
+			end
+			
+			local alt = IsAltKeyDown() and "ALT-" or ""
+			local ctrl = IsControlKeyDown() and "CTRL-" or ""
+			local shift = IsShiftKeyDown() and "SHIFT-" or ""
+
+			binding = alt..ctrl..shift..key
+		end
+		if (index and button and button.setBinding) then
+			self:saveBinding(buttonName, index, binding)
+		end
+	end,
 	toggleBindingMode = function (self)
+		ns.Button.handler = self
 		self.bindingMode = not self.bindingMode
 		if (self.bindingMode) then
-			O3.UI.IconButton.bindMode = true
+			ns.Button.keybindMode = true
 			O3.Alert('Keybinds mode is enabled. Press exit to leave keybind mode', function ()
-				self.frame:SetScript('OnKeyUp', nil)
-				self.frame:SetScript('OnKeyDown', nil)
-				self.bindingMode = false
+				ns.Button.keybindMode = false
+				-- for i = 1, #self.bars do
+				-- 	for b = 1, #self.bars[i].buttons do
+				-- 		self.bars[i].buttons[b]:keybindMode(nil)
+				-- 	end
+				-- end
 			end, 'Exit')
-			self.frame:SetScript('OnKeyDown', function (frame)
-				local buttonFrame = GetMouseFocus()
-				local button = buttonFrame.panel
-				local buttonName = buttonFrame.name
-				local index = button and button.index or nil
-				local binding = nil
-
-				if not buttonFrame or not button then
-					frame:SetPropagateKeyboardInput(true)
-				else
-					frame:SetPropagateKeyboardInput(false)
-				end
-			end)
-			self.frame:SetScript('OnKeyUp', function (frame, key)
-				local buttonFrame = GetMouseFocus()
-				local button = buttonFrame.panel
-				local buttonName = buttonFrame:GetName()
-				local index = button and button.index or nil
-				local binding = nil
-
-				if key == "ESCAPE" then
-					binding = nil
-				else
-					if key == "LSHIFT" or key == "RSHIFT" or key == "LCTRL" or key == "RCTRL" or key == "LALT" or key == "RALT" or key == "UNKNOWN" or key == "LeftButton" or key == "MiddleButton" then 
-						return 
-					end
-					
-					if key == "Button4" then 
-						key = "BUTTON4" 
-					end
-					if key == "Button5" then 
-						key = "BUTTON5" 
-					end
-					
-					local alt = IsAltKeyDown() and "ALT-" or ""
-					local ctrl = IsControlKeyDown() and "CTRL-" or ""
-					local shift = IsShiftKeyDown() and "SHIFT-" or ""
-
-					binding = alt..ctrl..shift..key
-				end
-				if (index and button and button.setBinding) then
-					self:saveBinding(buttonName, index, binding)
-				end
-
-			end)
+		else
+			ns.Button.keybindMode = false
 		end
+
 	end,	
 	toggleConfigMode = function (self)
 		self.configMode = not self.configMode
@@ -302,8 +310,12 @@ local handler = O3:module({
 			ActionBarController,
 			MainMenuBar, MainMenuBarArtFrame, BonusActionBarFrame, OverrideActionBar,
 			MultiBarLeft, MultiBarRight, MultiBarBottomLeft, MultiBarBottomRight,
-			--PossessBarFrame, PetActionBarFrame, StanceBarFrame,
+			PetActionBarFrame, 
+			--PossessBarFrame, 
+			--StanceBarFrame,
 			ShapeshiftBarLeft, ShapeshiftBarMiddle, ShapeshiftBarRight,
+			ActionBarButtonEventsFrame,
+			ActionBarActionEventsFrame,
 		}
 		for _, element in pairs(elements) do
 			-- if element:GetObjectType() == "Frame" then
@@ -333,12 +345,16 @@ local handler = O3:module({
 		end
 		uiManagedFrames = nil
 	end,
-
 	setup = function (self)
 		self.panel = self.O3.UI.Panel:instance({
 			name = self.name
 		})
 		self.frame = self.panel.frame
+		self.frame:SetFrameStrata('DIALOG')
+		self.frame.texture = self.frame:CreateTexture()
+		self.frame.texture:SetAllPoints(self.frame)
+		self.frame.texture:SetTexture(1, 0, 0, .25)
+		self.frame:Hide()
 		self:initEventHandler()
 		
 	end,

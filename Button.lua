@@ -166,15 +166,127 @@ ns.Button = O3.UI.IconButton:extend({
 			self.binding = nil
 			self.text:SetText('')
 		elseif self.binding then
-			SetBinding(self.binding, "CLICK "..self.name..":LeftButton")
 			local bindingText = stringGsub(self.binding, "ALT--CTRL", "ac")
+			SetBinding(self.binding, "CLICK "..self.name..":LeftButton")
 			bindingText = stringGsub(bindingText,"ALT--SHIFT","as")
 			bindingText = stringGsub(bindingText,"SHIFT","s")
 			bindingText = stringGsub(bindingText,"ALT","a")
 			bindingText = stringGsub(bindingText,"CTRL","c")
+			bindingText = stringGsub(bindingText,"BUTTON5","B5")
+			bindingText = stringGsub(bindingText,"BUTTON4","B4")
+			bindingText = stringGsub(bindingText,"BUTTON3","MB")
 			bindingText = stringGsub(bindingText,"MOUSEWHEELUP","▲")
 			bindingText = stringGsub(bindingText,"MOUSEWHEELDOWN","▼")
 			self.text:SetText(bindingText)
+		end
+	end,
+	hook = function (self)
+		self.frame:RegisterForClicks('AnyUp', 'AnyDown')
+		self.frame:SetScript('OnEnter', function (frame)
+			if self.keybindMode then
+				self.frame:SetScript('OnKeyUp', function (frame, ...)
+					if (self.handler and GetMouseFocus() == frame) then
+						self.handler:onKeyUp(...)
+					else
+						frame:SetPropagateKeyboardInput(false)
+					end
+				end)
+				self.frame:SetScript('OnKeyDown', function (frame, ...)
+					frame:SetPropagateKeyboardInput(true)
+					if (self.handler and GetMouseFocus() == frame) then
+						frame:SetPropagateKeyboardInput(false)
+					end
+				end)
+				self.frame:SetScript('OnMouseUp', function (frame, ...)
+					if (self.handler) then
+						self.handler:onKeyUp(...)
+					end
+				end)
+
+			end
+			if (not self._enabled) then
+				return
+			end
+			self.highlight:Show()
+			if (self.onEnter) then
+				self:onEnter(self.frame)
+			end
+		end)
+		self.frame:SetScript('OnLeave', function (frame)
+			if (self.keybindMode) then
+				self.frame:SetScript('OnKeyUp', nil)
+				self.frame:SetScript('OnKeyDown', nil)
+				if (self.onMouseUp) then
+					self.frame:SetScript('OnMouseUp', function (frame, ...)
+						if (not self._enabled) then
+							return
+						end
+						if (self.onMouseUp) then
+							self:onMouseUp(...)
+						end
+					end)
+				else
+					self.frame:SetScript('OnMouseUp', nil)
+				end				
+			end
+			if (not self._enabled) then
+				return
+			end			
+			self.highlight:Hide()
+			if (self.onLeave) then
+				self:onLeave(self.frame)
+			end
+		end)
+		if (self.onMouseUp) then
+			self.frame:SetScript('OnMouseUp', function (frame, ...)
+				if (not self._enabled) then
+					return
+				end
+				if (self.onMouseUp) then
+					self:onMouseUp(...)
+				end
+			end)
+		else
+			self.frame:SetScript('OnMouseUp', nil)
+		end
+
+		if (self.onKeyUp) then
+			self.frame:SetScript('OnKeyUp', function (frame, ...)
+				if (self.onKeyUp) then
+					self:onKeyUp(...)
+				end
+			end)
+		else
+			self.frame:SetScript('OnKeyUp', nil)
+		end
+		if (self.onKeyDown) then
+			self.frame:SetScript('OnKeyDown', function (frame, ...)
+				if (self.onKeyDown) then
+					self:onKeyDown(...)
+				end
+			end)
+		else
+			self.frame:SetScript('OnKeyDown', nil)
+		end
+
+		if (self.onMouseDown) then
+			self.frame:SetScript('OnMouseDown', function (frame, ...)
+				if (not self._enabled) then
+					return
+				end
+				if (self.onMouseDown) then
+					self:onMouseDown(...)
+				end
+			end)
+		end
+
+		if (self.onClick) then
+			self.frame:SetScript('OnClick', function (frame)
+				if (not self._enabled) then
+					return
+				end
+				self:onClick(self.frame)
+			end)
 		end
 	end,
 })

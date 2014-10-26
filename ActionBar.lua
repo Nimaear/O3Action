@@ -13,6 +13,8 @@ ns.ActionBar = O3.Class:extend({
 	statePage = false,
 	stateVisibility = nil,
 	maxButtons = 12,
+	_actionLookup = {},
+	_actionLastUpdate = {},
 	config = {
 		visible = true,
 		rows = 1,
@@ -63,18 +65,18 @@ ns.ActionBar = O3.Class:extend({
 			self:onShow()
 		end)
 
-		frame:SetScript('OnUpdate', function (frame, elapsed)
-			self.timeSinceLastUpdate = self.timeSinceLastUpdate + elapsed
+		-- frame:SetScript('OnUpdate', function (frame, elapsed)
+		-- 	self.timeSinceLastUpdate = self.timeSinceLastUpdate + elapsed
 
-			if (self.timeSinceLastUpdate > 0.5) then
-				for i = 1, #self.buttons do
-					local button = self.buttons[i]
-					--button:updateAction()
-					button:updateUsable()
-				end				
-				self.timeSinceLastUpdate = 0
-			end			
-		end)
+		-- 	if (self.timeSinceLastUpdate > 0.5) then
+		-- 		for i = 1, #self.buttons do
+		-- 			local button = self.buttons[i]
+		-- 			--button:updateAction()
+		-- 			button:updateUsable()
+		-- 		end				
+		-- 		self.timeSinceLastUpdate = 0
+		-- 	end			
+		-- end)
 
 		self.buttons = {}
 		self:bindEventHandlers()
@@ -236,6 +238,8 @@ ns.ActionBar = O3.Class:extend({
 			height = self.settings.buttonSize,
 		}, self.frame)
 		self.frame:SetFrameRef(buttonName, button.frame)
+		self._actionLookup[action] = button
+		self._actionLastUpdate[action] = 0
 		return button
 	end,
 	createButtons = function (self)
@@ -307,6 +311,15 @@ ns.ActionBar = O3.Class:extend({
 			button:update()
 		end
 	end,
+	ACTIONBAR_SLOT_CHANGED = function (self, slot)
+		if (self._actionLookup[slot]) then
+			local now = GetTime()
+			if self._actionLastUpdate[slot] > now - 0.1 then
+				self._actionLookup[slot]:update()
+				self._actionLastUpdate[slot] = now
+			end
+		end
+	end,
 	bindEventHandlers = function (self)
 		self.ACTIONBAR_UPDATE_COOLDOWN = self.updateCooldown
 		self.ACTIONBAR_UPDATE_USABLE = self.updateUsable
@@ -315,12 +328,11 @@ ns.ActionBar = O3.Class:extend({
 		self.SPELL_UPDATE_CHARGES = self.update
 		self.SPELL_UPDATE_COOLDOWN = self.updateCooldown
 		self.UPDATE_VEHICLE_ACTIONBAR = self.update
-		self.ACTIONBAR_SLOT_CHANGED = self.update
+		--self.ACTIONBAR_SLOT_CHANGED = self.update
 		self.UPDATE_BONUS_ACTIONBAR = self.update
 		self.UPDATE_SHAPESHIFT_FORM = self.update
 		self.UPDATE_SHAPESHIFT_FORMS = self.update
 		self.UPDATE_SHAPESHIFT_USABLE = self.update
-		self.ACTIONBAR_PAGE_CHANGED = self.update
 		self.UPDATE_EXTRA_ACTION_BAR = self.update
 		self.UNIT_TARGET = self.update
 	end,
