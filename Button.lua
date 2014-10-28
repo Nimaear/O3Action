@@ -25,7 +25,14 @@ ns.Button = O3.UI.IconButton:extend({
 		local buttonFrame = self.frame
 		local icon = self.icon
 		local modifiedSlot = (buttonFrame:GetAttribute("actionpage")-1)*12+buttonFrame:GetID()
-		local type, id, subType, spellID = GetActionInfo(modifiedSlot)
+		local type, id, subType, spellId = GetActionInfo(modifiedSlot)
+		if (self._type == type and self._id == id and self._spellId == spellId) then
+			return false
+		end
+		self._type = type
+		self._id = id
+		self._subType = subType
+		self._spellId = spellId
 
 		if (type == "spell") then
 			local spellName, spellRank, buttonFrameTexture = GetSpellInfo(id)
@@ -51,14 +58,12 @@ ns.Button = O3.UI.IconButton:extend({
 				self.count:SetText("")
 			end
 		end
-	end,
-	updateState = function (self)
-		self:updateAction()
+		return true
 	end,
 	updateUsable = function (self)
 		local buttonFrame = self.frame
 		local modifiedSlot = (buttonFrame:GetAttribute("actionpage")-1)*12+buttonFrame:GetID()
-		local type, id, subType, spellID = GetActionInfo(modifiedSlot)
+		-- local type, id, subType, spellID = GetActionInfo(modifiedSlot)
 		if (IsUsableAction(modifiedSlot)) then
 			self.icon:SetDesaturated(false)
 			-- if ActionHasRange(modifiedSlot) then
@@ -76,10 +81,10 @@ ns.Button = O3.UI.IconButton:extend({
 		end
 	end,
 	update = function (self)
-		self:updateAction()
-		self:updateState()
+		local changed = self:updateAction()
 		self:updateUsable()
 		self:updateCooldown()
+		return changed
 	end,
 	postInit = function (self)
 
@@ -344,7 +349,6 @@ ns.PetButton = ns.Button:extend({
 	end,
 	update = function (self)
 		self:updateAction()
-		self:updateState()
 		self:updateUsable()
 		self:updateCooldown()
 	end,

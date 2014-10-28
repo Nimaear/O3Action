@@ -314,9 +314,11 @@ ns.ActionBar = O3.Class:extend({
 	ACTIONBAR_SLOT_CHANGED = function (self, slot)
 		if (self._actionLookup[slot]) then
 			local now = GetTime()
-			if self._actionLastUpdate[slot] > now - 0.1 then
-				self._actionLookup[slot]:update()
-				self._actionLastUpdate[slot] = now
+			self._actionLastUpdate = self._actionLastUpdate or 0
+			if self._actionLastUpdate[slot] < now - 0.1 then
+				if self._actionLookup[slot]:update() then
+					self._actionLastUpdate[slot] = now
+				end
 			end
 		end
 	end,
@@ -324,7 +326,6 @@ ns.ActionBar = O3.Class:extend({
 		self.ACTIONBAR_UPDATE_COOLDOWN = self.updateCooldown
 		self.ACTIONBAR_UPDATE_USABLE = self.updateUsable
 		self.SPELL_UPDATE_USABLE = self.updateUsable
-		self.ACTIONBAR_UPDATE_STATE = self.updateState
 		self.SPELL_UPDATE_CHARGES = self.update
 		self.SPELL_UPDATE_COOLDOWN = self.updateCooldown
 		self.UPDATE_VEHICLE_ACTIONBAR = self.update
