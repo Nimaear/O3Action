@@ -16,10 +16,10 @@ ns.Button = O3.UI.IconButton:extend({
 		local modifiedSlot = (buttonFrame:GetAttribute("actionpage")-1)*12+buttonFrame:GetID()
 		local start, duration, enable, charges, maxCharges = GetActionCooldown(modifiedSlot)
 		local cooldown = self.cooldown
-		if (start+duration ~= self.startDuration) then
+		if (start+duration ~= self.expire) then
 			cooldown:SetCooldown(start, duration)
 		end
-		self.startDuration  = start + duration
+		self.expire  = start + duration
 	end,
 	updateAction = function (self)
 		local buttonFrame = self.frame
@@ -63,18 +63,9 @@ ns.Button = O3.UI.IconButton:extend({
 	updateUsable = function (self)
 		local buttonFrame = self.frame
 		local modifiedSlot = (buttonFrame:GetAttribute("actionpage")-1)*12+buttonFrame:GetID()
-		-- local type, id, subType, spellID = GetActionInfo(modifiedSlot)
 		if (IsUsableAction(modifiedSlot)) then
 			self.icon:SetDesaturated(false)
-			-- if ActionHasRange(modifiedSlot) then
-			-- 	if (IsActionInRange(modifiedSlot) == 1) then
-			-- 		self.icon:SetVertexColor(1.0, 1.0, 1.0)	
-			-- 	else
-			-- 		self.icon:SetVertexColor(1.0, 0, 0)
-			-- 	end
-			-- else
-				self.icon:SetVertexColor(1.0, 1.0, 1.0)
-			-- end
+			self.icon:SetVertexColor(1.0, 1.0, 1.0)
 		else
 			self.icon:SetDesaturated(true)
 			self.icon:SetVertexColor(0.5, 0.5, 0.5)

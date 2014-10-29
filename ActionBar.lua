@@ -48,11 +48,13 @@ ns.ActionBar = O3.Class:extend({
 	onShow = function (self)
 		for i = 1, #self.buttons do
 			local button = self.buttons[i]
+			button.type = nil
+			button.expire = 0
 			button:update()
 		end
 	end,
 	init = function (self)
-		local frame = CreateFrame('Frame', nil, UIParent, 'SecureHandlerStateTemplate')
+		local frame = CreateFrame('Frame', nil, self.handler.panel.frame, 'SecureHandlerStateTemplate')
 		frame:SetAttribute("_onstate-page", [[
 			newstate = tonumber(newstate)
 			self:SetAttribute('actionpage',newstate)

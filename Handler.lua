@@ -21,9 +21,10 @@ local handler = O3:module({
 	},
 	config = {
 		enabled = true,
+		preset = nil,
 	},
 	settings = {
-		preset = nil,
+		enabled = true,
 	},
 	configMode = false,
 	addOptions = function (self)
@@ -31,6 +32,10 @@ local handler = O3:module({
 		for name, preset in pairs(ns.presets) do
 			table.insert(presets, {value = name, label = name})
 		end
+		self:addOption('enabled', {
+			type = 'Toggle',
+			label = 'Enabled',
+		})		
 		self:addOption('_Presets', {
 			type = 'Title',
 			label = 'Presets',
@@ -260,9 +265,8 @@ local handler = O3:module({
 	addBar = function (self, bar)
 		tableInsert(self.bars, bar)
 	end,
-	PLAYER_ENTERING_WORLD = function (self)
+	postCreate = function (self)
 		self:hideBlizzardCrap()
-		self:unregisterEvent('PLAYER_ENTERING_WORLD')
 		for i = 1, #self.bars do
 			local constructor = self.bars[i]
 			
@@ -350,14 +354,21 @@ local handler = O3:module({
 			name = self.name
 		})
 		self.frame = self.panel.frame
-		self.frame:SetFrameStrata('DIALOG')
-		self.frame.texture = self.frame:CreateTexture()
-		self.frame.texture:SetAllPoints(self.frame)
-		self.frame.texture:SetTexture(1, 0, 0, .25)
-		self.frame:Hide()
 		self:initEventHandler()
-		
+		self:postCreate()
 	end,
+	setupEventHandler = function (self)
+		self.frame:SetScript('OnEvent', function (frame, event, ...)
+			local objects = self._events[event]
+			if objects then
+				for object, enabled in pairs(objects) do
+					if enabled and object.frame:IsVisible() and object[event] then
+						object[event](object, ...)
+					end
+				end
+			end
+		end)	
+	end,	
 })
 --handler:addBar(test)
 
