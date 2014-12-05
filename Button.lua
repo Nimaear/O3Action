@@ -20,6 +20,17 @@ ns.Button = O3.UI.IconButton:extend({
 			cooldown:SetCooldown(start, duration)
 		end
 		self.expire  = start + duration
+		local count = GetActionCount(modifiedSlot)
+		if (count > 1) then
+			self.count:SetText(count)
+		else
+			local actionCount, actionMax = GetActionCharges(modifiedSlot)
+			if actionMax > 1 then 
+				self.count:SetText(actionCount)
+			else
+				self.count:SetText("")
+			end
+		end
 	end,
 	updateAction = function (self)
 		local buttonFrame = self.frame
@@ -46,17 +57,6 @@ ns.Button = O3.UI.IconButton:extend({
 		else
 			local actionTexture = GetActionTexture(modifiedSlot)
 			icon:SetTexture(actionTexture)
-		end
-		local count = GetActionCount(modifiedSlot)
-		if (count > 1) then
-			self.count:SetText(count)
-		else
-			local actionCount, actionMax = GetActionCharges(modifiedSlot)
-			if actionMax > 1 then 
-				self.count:SetText(actionCount)
-			else
-				self.count:SetText("")
-			end
 		end
 		return true
 	end,

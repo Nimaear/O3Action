@@ -11,7 +11,7 @@ ns.ActionBar = O3.Class:extend({
 	timeSinceLastUpdate = 0,
 	name = 'Default',
 	statePage = false,
-	stateVisibility = nil,
+	stateVisibility = "[petbattle] hide; show",
 	maxButtons = 12,
 	_actionLookup = {},
 	_actionLastUpdate = {},
@@ -110,15 +110,13 @@ ns.ActionBar = O3.Class:extend({
 			label = self.name,
 			subModule = self.name,
 		})
-		if (not self.stateVisibility) then
-			handler:addOption('visible', {
-				type = 'Toggle',
-				label = 'Visible',
-				bar = self,
-				setter = 'setVisible',
-				subModule = self.name,
-			})
-		end
+		handler:addOption('visible', {
+			type = 'Toggle',
+			label = 'Visible',
+			bar = self,
+			setter = 'setVisible',
+			subModule = self.name,
+		})
 		local cols, rows
 		handler:addOption('rows', {
 			type = 'Range',
@@ -284,7 +282,7 @@ ns.ActionBar = O3.Class:extend({
 	end,
 	registerStateDriver = function (self)
 		--RegisterStateDriver(self.frame, "page", "[vehicleui:12] 12; [possessbar] 12; [overridebar] 14; [bar:2] 2; [bonusbar:1] 7; 1")		
-		if (self.stateVisibility) then
+		if (self.settings.visible and self.stateVisibility) then
 			RegisterStateDriver(self.frame, "visibility", self.stateVisibility)
 		end
 		if (self.statePage) then

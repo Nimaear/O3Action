@@ -74,10 +74,20 @@ local handler = O3:module({
 	end,
 	setVisible = function (self, token, value, option)
 		O3:safe(function ()
+
 			if (value) then
-				option.bar:show()
+				if (option.bar.stateVisibility) then
+					RegisterStateDriver(option.bar.frame, "visibility", option.bar.stateVisibility)
+				else
+					option.bar:show()
+				end
 			else
-				option.bar:hide()
+				if (option.bar.stateVisibility) then
+					UnregisterStateDriver(option.bar.frame, "visibility")
+					option.bar:hide()
+				else
+					option.bar:hide()
+				end
 			end
 		end)
 	end,
@@ -253,8 +263,13 @@ local handler = O3:module({
 				bar:unregisterStateDriver()
 				bar.frame:Show()
 			else
+				
 				if (bar.settings.visible) then
-					bar:show()
+					if (option.bar.stateVisibility) then
+						RegisterStateDriver(option.bar.frame, "visibility", option.bar.stateVisibility)
+					else
+						option.bar:show()
+					end
 				else
 					bar:hide()
 				end

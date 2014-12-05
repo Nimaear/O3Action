@@ -5,6 +5,7 @@ local extraBar = ns.ActionBar:extend({
 	name = 'Extra',
 	id = 'extra',
 	stateVisibility = "[extrabar] show; hide",
+	maxButtons = 1,
 	config = {
 		visible = true,
 		buttonSize = 48,
@@ -18,7 +19,7 @@ local extraBar = ns.ActionBar:extend({
 		anchorTo = 'TOP',
 		anchorParent = 'Main',
 		bindings = {
-			--"ALT-Y",
+			-- "ALT-Y",	
 		},
 	},
 	events = {
